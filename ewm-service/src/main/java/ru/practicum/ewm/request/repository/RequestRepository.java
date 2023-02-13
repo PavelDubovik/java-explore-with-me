@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface RequestRepository extends JpaRepository<ParticipationRequest, Long> {
 
-    ParticipationRequest findByIdAndRequester(Long Id, Long userId);
+    ParticipationRequest findByIdAndRequester(Long id, Long userId);
 
     List<ParticipationRequest> findAllByRequester(Long id);
 
     List<ParticipationRequest> findAllByEvent_Id(Long eventId);
 
-    @Query ("SELECT pr FROM ParticipationRequest pr WHERE pr.event = :event AND pr.id in :requestIds")
-    List<ParticipationRequest> findAllByEventIdAndRequester (Event event, List<Long> requestIds);
+    @Query("SELECT pr FROM ParticipationRequest pr WHERE pr.event = :event AND pr.id in :requestIds")
+    List<ParticipationRequest> findAllByEventIdAndRequester(Event event, List<Long> requestIds);
 }

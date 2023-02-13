@@ -14,7 +14,7 @@ import java.util.Set;
 @Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface EventMapper {
 
-    @Mapping(target="category", source="category", qualifiedByName = "toCategory")
+    @Mapping(target = "category", source = "category", qualifiedByName = "toCategory")
     Event toEvent(NewEventDto newEventDto);
 
     @Named("toCategory")

@@ -12,10 +12,10 @@ import java.util.Set;
 @Mapper(componentModel = "spring", uses = {EventMapper.class})
 public interface CompilationMapper {
 
-    @Mapping(target="events", source="events")
+    @Mapping(target = "events", source = "events")
     Compilation toCompilation(NewCompilationDto newCompilationDto, Set<EventDto> events);
 
-    @Mapping(target="events", source="events")
+    @Mapping(target = "events", source = "events")
     @Mapping(target = "id", source = "compId")
     Compilation toCompilation(UpdateCompilationRequest updateCompilationRequest, Set<EventDto> events, Long compId);
 
