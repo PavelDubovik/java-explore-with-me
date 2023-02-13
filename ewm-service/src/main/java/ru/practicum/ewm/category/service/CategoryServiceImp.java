@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.category.dto.NewCategoryDto;
 import ru.practicum.ewm.category.mapper.CategoryMapper;
+import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repository.CategoryRepository;
 
 import java.util.List;
@@ -22,10 +23,10 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public CategoryDto createCategory(NewCategoryDto newCategoryDto) {
-        CategoryDto categoryDto = categoryMapper.toCategoryDto(newCategoryDto);
-        categoryDto = categoryRepository.save(categoryDto);
-        log.info("Category with id = {} and name = {} is created", categoryDto.getId(), categoryDto.getName());
-        return categoryDto;
+        Category category = categoryMapper.toCategory(newCategoryDto);
+        category = categoryRepository.save(category);
+        log.info("Category with id = {} and name = {} is created", category.getId(), category.getName());
+        return categoryMapper.toCategoryDto(category);
     }
 
     @Override
@@ -36,26 +37,25 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public CategoryDto updateCategory(Long catId, NewCategoryDto newCategoryDto) {
-        CategoryDto categoryDto = categoryMapper.toCategoryDto(newCategoryDto);
-        categoryDto.setId(catId);
-        categoryDto = categoryRepository.save(categoryDto);
-        log.info("Category with id = {} is updated", categoryDto.getId());
-        return categoryDto;
+        Category category = categoryMapper.toCategory(newCategoryDto);
+        category.setId(catId);
+        category = categoryRepository.save(category);
+        log.info("Category with id = {} is updated", category.getId());
+        return categoryMapper.toCategoryDto(category);
     }
 
     @Override
     public List<CategoryDto> getCategories(int from, int size) {
-        // TODO: проверить на положительное значение from и size
-        Pageable pageable = PageRequest.of(from, size);
-        List<CategoryDto> categoryDtoList = categoryRepository.findAll(pageable).toList();
-        log.info("{} categories got", categoryDtoList.size());
-        return categoryDtoList;
+        Pageable pageable = PageRequest.of(from / size, size);
+        List<Category> categories = categoryRepository.findAll(pageable).toList();
+        log.info("{} categories got", categories.size());
+        return categoryMapper.toCategoryDto(categories);
     }
 
     @Override
     public CategoryDto getCategoryById(Long catId) {
-        CategoryDto categoryDto = categoryRepository.findById(catId).orElseThrow();
+        Category category = categoryRepository.findById(catId).orElseThrow();
         log.info("Category with id = {} got", catId);
-        return categoryDto;
+        return categoryMapper.toCategoryDto(category);
     }
 }

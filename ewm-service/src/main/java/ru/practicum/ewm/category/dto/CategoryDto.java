@@ -1,19 +1,13 @@
 package ru.practicum.ewm.category.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "Categories")
-@Getter
-@Setter
-@RequiredArgsConstructor
+@Data
+@Builder
+@Jacksonized
 public class CategoryDto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 }

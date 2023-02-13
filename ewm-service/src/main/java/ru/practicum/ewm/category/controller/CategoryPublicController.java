@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.category.service.CategoryService;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -19,14 +21,14 @@ public class CategoryPublicController {
 
     @GetMapping
     public ResponseEntity<List<CategoryDto>> getCategories(
-            @RequestParam(defaultValue = "0") int from,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(defaultValue = "10") @Positive int size) {
         log.info("Getting {} categories from {} page", size, from);
         return ResponseEntity.status(200).body(categoryService.getCategories(from, size));
     }
 
     @GetMapping("{catId}")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long catId) {
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable @Positive Long catId) {
         log.info("Getting category with id = {}", catId);
         return ResponseEntity.status(200).body(categoryService.getCategoryById(catId));
     }

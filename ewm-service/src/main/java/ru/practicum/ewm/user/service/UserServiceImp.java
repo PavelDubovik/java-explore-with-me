@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewm.user.dto.NewUserRequest;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.mapper.UserMapper;
+import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
 
 import java.util.List;
@@ -22,23 +23,22 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDto createUser(NewUserRequest newUserRequest) {
-        UserDto userDto = userMapper.toUserDto(newUserRequest);
-        userDto = userRepository.save(userDto);
-        log.info("User with id = {} is created", userDto.getId());
-        return userDto;
+        User user = userMapper.toUser(newUserRequest);
+        user = userRepository.save(user);
+        log.info("User with id = {} is created", user.getId());
+        return userMapper.toUserDto(user);
     }
 
     @Override
     public List<UserDto> getUsers(List<Long> ids, int from, int size) {
-        // TODO: проверить на положительное значение from и size
-        Pageable pageable = PageRequest.of(from, size);
-        List<UserDto> userDtoList;
-        if (ids.isEmpty()) {
-            userDtoList = userRepository.findAllByOrderById(pageable);
+        Pageable pageable = PageRequest.of(from / size, size);
+        List<User> users;
+        if (ids == null) {
+            users = userRepository.findAllByOrderById(pageable);
         } else {
-            userDtoList = userRepository.findAllByIdInOrderById(ids, pageable);
+            users = userRepository.findAllByIdInOrderById(ids, pageable);
         }
-        return userDtoList;
+        return userMapper.toUserDto(users);
     }
 
     @Override

@@ -8,6 +8,8 @@ import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.category.dto.NewCategoryDto;
 import ru.practicum.ewm.category.service.CategoryService;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequestMapping("/admin/categories")
@@ -17,7 +19,7 @@ public class CategoryAdminController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody NewCategoryDto newCategoryDto) {
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
         log.info("Creating new category {}", newCategoryDto.getName());
         return ResponseEntity.status(201).body(categoryService.createCategory(newCategoryDto));
     }
@@ -32,7 +34,7 @@ public class CategoryAdminController {
     @PatchMapping("/{catId}")
     public ResponseEntity<CategoryDto> updateCategory(
             @PathVariable Long catId,
-            @RequestBody NewCategoryDto newCategoryDto) {
+            @RequestBody @Valid NewCategoryDto newCategoryDto) {
         log.info("Updating category with id = {}", catId);
         return ResponseEntity.status(200).body(categoryService.updateCategory(catId, newCategoryDto));
     }
