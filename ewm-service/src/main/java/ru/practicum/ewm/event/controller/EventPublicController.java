@@ -36,8 +36,16 @@ public class EventPublicController {
             @RequestParam(required = false) Boolean onlyAvailable,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "0") int from,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
         log.info("Getting events by user by parameters");
+        EndpointHitDto endpointHitDto = EndpointHitDto.builder()
+                .ip(request.getRemoteAddr())
+                .uri(request.getRequestURI())
+                .app(APPLICATION_NAME)
+                .timestamp(LocalDateTime.now())
+                .build();
+        statService.createHit(endpointHitDto);
         return ResponseEntity.status(200)
                 .body(eventService.getEventsForUserByParameters(
                         text, categories, rangeStart, rangeEnd, paid, onlyAvailable, sort, from, size));
