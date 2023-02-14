@@ -23,7 +23,7 @@ public class StatServiceImp implements StatService {
     private final StatsClient statsClient;
 
     @Override
-    public void CreateHit(EndpointHitDto endpointHitDto) {
+    public void createHit(EndpointHitDto endpointHitDto) {
         statsClient.createHit(endpointHitDto);
     }
 

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StatService {
-    void CreateHit (EndpointHitDto endpointHitDto);
+    void createHit(EndpointHitDto endpointHitDto);
 
     List<ViewStatsDto> getStats(LocalDateTime startDate, List<Long> eventIds) throws JsonProcessingException;
 }

@@ -54,7 +54,7 @@ public class EventPublicController {
                 .app(APPLICATION_NAME)
                 .timestamp(LocalDateTime.now())
                 .build();
-        statService.CreateHit(endpointHitDto);
+        statService.createHit(endpointHitDto);
         return ResponseEntity.status(200).body(eventService.getUserEventById(id));
     }
 }
