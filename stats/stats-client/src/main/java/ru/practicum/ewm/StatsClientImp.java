@@ -2,6 +2,7 @@ package ru.practicum.ewm;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,7 +14,8 @@ import java.util.*;
 @Service
 public class StatsClientImp implements StatsClient {
     private final RestTemplate restTemplate = new RestTemplate();
-    private String serverUrl = "http://localhost:9090";
+    @Value("${stats-server.url}")
+    private String serverUrl;
 
     @Override
     public void createHit(EndpointHitDto endpointHitDto) {
@@ -32,10 +34,8 @@ public class StatsClientImp implements StatsClient {
         parameters.put("uris", uris.toArray(String[]::new));
         parameters.put("unique", unique);
 
-//        String uri = serverUrl.concat("/stats?start={start}&end={end}&uris={uris}&unique={unique}");
         ResponseEntity<String> response = restTemplate.getForEntity(
                 serverUrl + "/stats?start={start}&end={end}&uris={uris}&unique={unique}",
-//                uri,
                 String.class,
                 parameters);
 
