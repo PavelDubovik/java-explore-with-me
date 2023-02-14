@@ -235,8 +235,6 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    // TODO: Только доступные onlyAvailable
-    // TODO: Сортировка
     public List<EventShortDto> getEventsForUserByParameters(
             String text, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean paid,
             Boolean onlyAvailable, String sort, int from, int size) {
@@ -244,7 +242,6 @@ public class EventServiceImp implements EventService {
         QEvent event = QEvent.event;
         Predicate predicate = QPredicates.builder()
                 .add(text, event.annotation::containsIgnoreCase)
-//                .add(text, event.description::containsIgnoreCase) TODO: должно быть "или"
                 .add(categories, event.category.id::in)
                 .add(rangeStart, event.eventDate::after)
                 .add(rangeEnd, event.eventDate::before)
@@ -276,7 +273,6 @@ public class EventServiceImp implements EventService {
         List<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toList());
         Map<Long, Long> statMap = new HashMap<>();
         List<ViewStatsDto> stats = statService.getStats(startDate, eventIds);
-
         stats.forEach(viewStatsDto ->
                 statMap.put(
                         Long.valueOf(viewStatsDto.getUri().substring(viewStatsDto.getUri().length() - 1)),
