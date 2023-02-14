@@ -38,5 +38,4 @@ public class CategoryAdminController {
         log.info("Updating category with id = {}", catId);
         return ResponseEntity.status(200).body(categoryService.updateCategory(catId, newCategoryDto));
     }
-
 }

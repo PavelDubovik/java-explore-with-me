@@ -19,7 +19,7 @@ public class Compilation {
     private Long id;
     private String title;
     private Boolean pinned;
-    @ManyToMany //(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "compilations_events",
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))

@@ -1,5 +1,6 @@
 package ru.practicum.ewm.event.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.category.repository.CategoryRepository;
+import ru.practicum.ewm.dto.ViewStatsDto;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.mapper.EventMapper;
 import ru.practicum.ewm.event.model.Event;
@@ -21,13 +23,12 @@ import ru.practicum.ewm.request.dto.RequestState;
 import ru.practicum.ewm.request.mapper.RequestMapper;
 import ru.practicum.ewm.request.model.ParticipationRequest;
 import ru.practicum.ewm.request.repository.RequestRepository;
+import ru.practicum.ewm.stat.StatService;
 import ru.practicum.ewm.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -40,6 +41,8 @@ public class EventServiceImp implements EventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
+
+    private final StatService statService;
 
     @Override
     public EventFullDto createEvent(Long userId, NewEventDto newEventDto) {
@@ -257,9 +260,28 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    public EventFullDto getUserEventById(Long id) {
-        Event event = eventRepository.findByIdAndStateIs(id, EventState.PUBLISHED);//, EventState.PUBLISHED.name());
-        return eventMapper.toEventFullDto(event);
+    public EventFullDto getUserEventById(Long id) throws JsonProcessingException {
+        Event event = Optional.of(eventRepository.findByIdAndStateIs(id, EventState.PUBLISHED)).orElseThrow();
+        Map<Long, Long> statMap = getStatMap(List.of(event));
+        EventFullDto eventFullDto = eventMapper.toEventFullDto(event);
+        if (!statMap.isEmpty()) {
+            eventFullDto.setViews(statMap.get(eventFullDto.getId()));
+        }
+        return eventFullDto;
+    }
+
+    private Map<Long, Long> getStatMap(List<Event> events) throws JsonProcessingException {
+        LocalDateTime startDate = events.stream()
+                .map(Event::getCreatedOn).min(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
+        List<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toList());
+        Map<Long, Long> statMap = new HashMap<>();
+        List<ViewStatsDto> stats = statService.getStats(startDate, eventIds);
+
+        stats.forEach(viewStatsDto ->
+                statMap.put(
+                        Long.valueOf(viewStatsDto.getUri().substring(viewStatsDto.getUri().length() - 1)),
+                        viewStatsDto.getHits()));
+        return statMap;
     }
 
     @Override

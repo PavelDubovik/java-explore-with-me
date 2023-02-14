@@ -1,5 +1,6 @@
 package ru.practicum.ewm.event.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 
@@ -26,7 +27,7 @@ public interface EventService {
 
     List<EventShortDto> getEventsForUserByParameters(String text, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean paid, Boolean onlyAvailable, String sort, int from, int size);
 
-    EventFullDto getUserEventById(Long id);
+    EventFullDto getUserEventById(Long id) throws JsonProcessingException;
 
     List<ParticipationRequestDto> getRequestsByEventAndUser(Long eventId, Long userId);
 }
