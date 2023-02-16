@@ -9,10 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import ru.practicum.ewm.dto.EndpointHitDto;
 import ru.practicum.ewm.dto.ViewStatsDto;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class StatsClientImp implements StatsClient {
@@ -34,7 +31,7 @@ public class StatsClientImp implements StatsClient {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("start", start);
         parameters.put("end", end);
-        parameters.put("uris", uris);
+        parameters.put("uris", uris.toArray(String[]::new));
         parameters.put("unique", unique);
 
         ResponseEntity<String> response = restTemplate.getForEntity(
