@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.comment.dto.CommentPublicDto;
 import ru.practicum.ewm.comment.dto.CommentRequestDto;
@@ -108,10 +109,11 @@ public class CommentServiceImp implements CommentService {
                 .add(statuses, comment.status::in)
                 .buildAnd();
 
+        PageRequest pageable = PageRequest.of(from, size, Sort.by("created").descending());
         if (predicate == null) {
-            comments = commentRepository.findAll(PageRequest.of(from, size)).toList();
+            comments = commentRepository.findAll(pageable).toList();
         } else {
-            comments = commentRepository.findAll(predicate, PageRequest.of(from, size)).toList();
+            comments = commentRepository.findAll(predicate, pageable).toList();
         }
         log.info("Comments by parameters got");
         return commentMapper.toCommentDto(comments);

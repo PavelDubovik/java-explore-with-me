@@ -9,6 +9,7 @@ import ru.practicum.ewm.comment.dto.CommentRequestDto;
 import ru.practicum.ewm.comment.dto.CommentDto;
 import ru.practicum.ewm.comment.service.CommentService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -21,7 +22,7 @@ public class CommentPrivateController {
 
     @PostMapping
     public ResponseEntity<CommentDto> createComment(@PathVariable Long userId,
-                                                    @RequestBody CommentRequestDto createCommentDto) {
+                                                    @RequestBody @Valid CommentRequestDto createCommentDto) {
         log.info("Creating new comment");
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(userId, createCommentDto));
     }
