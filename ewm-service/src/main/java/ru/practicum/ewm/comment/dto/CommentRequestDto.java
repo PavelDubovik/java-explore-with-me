@@ -1,15 +1,11 @@
 package ru.practicum.ewm.comment.dto;
 
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Value
-@Builder
-@Jacksonized
+@Data
 public class CommentRequestDto {
     @NotBlank
     String text;

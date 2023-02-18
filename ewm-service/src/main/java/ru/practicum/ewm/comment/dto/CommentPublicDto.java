@@ -1,16 +1,16 @@
 package ru.practicum.ewm.comment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.*;
 import ru.practicum.ewm.user.model.User;
 
 import java.time.LocalDateTime;
 
-@Value
+@Getter
+@Setter
 @Builder
-@Jacksonized
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommentPublicDto {
     Long id;
     String text;

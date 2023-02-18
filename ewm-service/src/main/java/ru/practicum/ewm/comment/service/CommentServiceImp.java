@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
 import com.querydsl.core.types.Predicate;
 
 @Slf4j
@@ -59,10 +60,15 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     public List<CommentPublicDto> getCommentsByEvent(Long eventId, int from, int size) {
-        PageRequest pageable = PageRequest.of(from, size);
-        List<Comment> comments = commentRepository
-                .findAllByEvent_IdAndStatusIsOrderByCreatedDesc(eventId, CommentStatus.APPROVED, pageable);
-        log.info("Comments for event with {}", eventId);
+        List<Comment> comments;
+        PageRequest pageable = PageRequest.of(from, size, Sort.by("created").descending());
+        QComment comment = QComment.comment;
+        Predicate predicate = QPredicates.builder()
+                .add(eventId, comment.event.id::in)
+                .add(CommentStatus.APPROVED, comment.status::eq)
+                .buildAnd();
+        comments = commentRepository.findAll(predicate, pageable).toList();
+        log.info("Comments by parameters got");
         return commentMapper.toCommentPublicDto(comments);
     }
 
@@ -80,8 +86,8 @@ public class CommentServiceImp implements CommentService {
     public CommentDto updateComment(Long userId, Long commentsId, CommentRequestDto updateComment) {
         Comment comment = Optional.ofNullable(commentRepository.findByIdAndAuthor_Id(commentsId, userId))
                 .orElseThrow(() ->
-                new NoSuchElementException(String
-                        .format("Comment with id %d and user id %d not found", commentsId, userId)));
+                        new NoSuchElementException(String
+                                .format("Comment with id %d and user id %d not found", commentsId, userId)));
         comment.setText(updateComment.getText());
         comment.setStatus(CommentStatus.WAITING);
         Comment updatedComment = commentRepository.save(comment);
@@ -104,8 +110,8 @@ public class CommentServiceImp implements CommentService {
         List<Comment> comments;
         QComment comment = QComment.comment;
         Predicate predicate = QPredicates.builder()
-                .add(userId, comment.author.id::in)
-                .add(eventId, comment.event.id::in)
+                .add(userId, comment.author.id::eq)
+                .add(eventId, comment.event.id::eq)
                 .add(statuses, comment.status::in)
                 .buildAnd();
 
