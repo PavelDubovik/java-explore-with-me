@@ -45,9 +45,9 @@ public class CommentPrivateController {
     @PatchMapping("/{commentsId}")
     public ResponseEntity<CommentDto> updateComment(@PathVariable Long userId,
                                                     @PathVariable Long commentsId,
-                                                    @RequestBody CommentRequestDto CommentDto) {
+                                                    @RequestBody CommentRequestDto commentDto) {
         log.info("Updating comment with id {}", commentsId);
-        return ResponseEntity.status(HttpStatus.OK).body(commentService.updateComment(userId, commentsId, CommentDto));
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.updateComment(userId, commentsId, commentDto));
     }
 
     @DeleteMapping("/{commentsId}")
