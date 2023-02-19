@@ -23,4 +23,6 @@ public interface CommentService {
     CommentDto updateCommentByAdmin(CommentDto commentDto);
 
     List<CommentPublicDto> getCommentsByEvent(Long eventId, int from, int size);
+
+    CommentPublicDto getComment(Long eventId, Long commentId);
 }

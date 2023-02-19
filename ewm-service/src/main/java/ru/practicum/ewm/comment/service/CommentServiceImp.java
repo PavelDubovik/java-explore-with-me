@@ -73,6 +73,16 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
+    public CommentPublicDto getComment(Long eventId, Long commentId) {
+        Comment comment = commentRepository.findByIdAndEvent_IdAndStatus(eventId, commentId, CommentStatus.APPROVED);
+        Optional.ofNullable(comment).orElseThrow(() ->
+                new NoSuchElementException(String
+                        .format("APPROVED Comment with id %d and event id %d not found", commentId, eventId)));
+        log.info("Comment with id = {} of event with id = {} got", commentId, eventId);
+        return commentMapper.toCommentPublicDto(comment);
+    }
+
+    @Override
     public CommentDto getCommentById(Long userId, Long commentsId) {
         Comment comment = commentRepository.findByIdAndAuthor_Id(commentsId, userId);
         Optional.ofNullable(comment).orElseThrow(() ->
