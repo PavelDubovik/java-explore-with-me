@@ -90,6 +90,18 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
+    @ExceptionHandler({IllegalStateException.class})
+    public ResponseEntity<Object> handleIllegalStateException(IllegalStateException ex) {
+        log.warn("Exception: {}", ex.getMessage());
+        ApiError apiError = ApiError.builder()
+                .status(HttpStatus.CONFLICT.name())
+                .reason("For the requested operation the conditions are not met.")
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now().format(FORMATTER))
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
+    }
+
     @ExceptionHandler({MissingServletRequestParameterException.class})
     public ResponseEntity<Object> handleMSRPException(MissingServletRequestParameterException ex) {
         log.warn("Exception: {}", ex.getMessage());
